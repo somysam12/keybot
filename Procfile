@@ -1,1 +1,1 @@
-web: python verify_key_bot_web.py
+web: python verify_key_bot.py

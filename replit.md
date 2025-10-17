@@ -13,12 +13,15 @@ This is a Telegram bot that verifies users through channel subscriptions and dis
 ## Project Structure
 ```
 .
-├── verify_key_bot.py    # Main bot application
-├── requirements.txt     # Python dependencies
-├── .env                 # Environment configuration (not in git)
-├── .env.example        # Example environment file
-├── Procfile            # Process configuration
-└── bot_data.db         # SQLite database (created on first run)
+├── verify_key_bot.py       # Main bot application
+├── requirements.txt        # Python dependencies
+├── .env                    # Environment configuration (not in git)
+├── .env.example           # Example environment file
+├── Procfile               # Process configuration for hosting
+├── render.yaml            # Render deployment configuration
+├── RENDER_DEPLOYMENT.md   # Render deployment guide
+├── README.md              # Project documentation
+└── bot_data.db            # SQLite database (created on first run)
 ```
 
 ## Core Features
@@ -59,6 +62,14 @@ Current configuration is stored in `.env` file.
   - ✅ Implemented MarkdownV2 with proper escaping for safety
   - ✅ Added support for variables in custom messages: {key}, {days}, {user}
   - ✅ Admin username support (@tgshaitaan) added alongside ID
+
+- **2025-10-17**: Render Deployment Ready
+  - ✅ Cleaned up requirements.txt (removed duplicates)
+  - ✅ Fixed Procfile for proper web service deployment
+  - ✅ Added render.yaml for easy Blueprint deployment
+  - ✅ Created comprehensive deployment guide (RENDER_DEPLOYMENT.md)
+  - ✅ Bot fully compatible with Render web service hosting
+  - ✅ Auto-restart and health check configured on port 5000
 
 ## Running the Bot
 The bot is configured to run automatically via the "Bot Server" workflow. It:
