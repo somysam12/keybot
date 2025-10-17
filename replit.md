@@ -44,13 +44,21 @@ Current configuration is stored in `.env` file.
 - `settings`: Bot configuration settings
 
 ## Recent Changes
-- **2025-10-17**: Initial Replit setup
+- **2025-10-17**: Initial Replit setup & Feature Enhancements
   - Installed Python 3.11 and all dependencies
   - Completed the bot implementation (was partially incomplete)
   - Added missing callback handlers and admin functionality
   - Configured workflow to run bot server on port 5000
   - Created .gitignore for Python project
   - Added README and documentation
+  
+- **2025-10-17**: Enhanced Features Update
+  - ✅ Improved channel verification with bot admin check
+  - ✅ Enhanced all messages with emojis and better formatting
+  - ✅ Added custom key message feature in admin panel
+  - ✅ Implemented MarkdownV2 with proper escaping for safety
+  - ✅ Added support for variables in custom messages: {key}, {days}, {user}
+  - ✅ Admin username support (@tgshaitaan) added alongside ID
 
 ## Running the Bot
 The bot is configured to run automatically via the "Bot Server" workflow. It:
@@ -61,10 +69,19 @@ The bot is configured to run automatically via the "Bot Server" workflow. It:
 ## Admin Usage
 1. Start bot with `/admin` command in Telegram
 2. Use inline keyboard to:
-   - Add keys (format: `key | duration_days | name | link`)
-   - View statistics
-   - Manage channels
-   - Configure cooldown period
+   - 🔑 Add keys (format: `key | duration_days | name | link`)
+   - 📊 View statistics
+   - 📢 Add/Remove channels
+   - 📋 List configured channels
+   - ⏰ Configure cooldown period
+   - 💬 Customize key message template
+
+### Custom Key Message
+Admin can customize the message sent when users receive keys:
+- Use `{key}` for the key text
+- Use `{days}` for duration in days
+- Use `{user}` for user's first name
+- Supports Markdown formatting (**, *, `, etc.)
 
 ## User Flow
 1. `/start` - Begin interaction
