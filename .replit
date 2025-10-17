@@ -33,10 +33,6 @@ outputType = "webview"
 localPort = 5000
 externalPort = 80
 
-[[ports]]
-localPort = 43757
-externalPort = 3000
-
 [deployment]
 deploymentTarget = "vm"
 run = ["python", "verify_key_bot.py"]
